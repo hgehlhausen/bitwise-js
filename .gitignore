@@ -1,0 +1,8 @@
+node_modules
+.idea
+.swp
+.log
+.temp
+.tmp
+
+!*/.gitkeep
