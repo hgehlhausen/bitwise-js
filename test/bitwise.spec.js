@@ -1,5 +1,5 @@
 let expect = require('chai').expect;
-let Bitwise = require('../bitwise.state');
+let Bitwise = require('../bitwise');
 
 describe('Bitwise', () => {
 
