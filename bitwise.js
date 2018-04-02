@@ -3,27 +3,32 @@
  * - This isn't as performant as writing directly where needed - use for testing only
  * - Indexes are 0 based and are right-to-left, as is with numbers
  */
-class Bitwise {
-    constructor(value = 0) {
+class Bitwise extends Number {
+
+    constructor (value) {
+        super();
         this.value = value;
     }
 
-    set value(value) {
-        const MAX_INT32 = 2147483648;
-        if (value > MAX_INT32) {
-            throw new Error("Max Value Exceeded")
-        }
-        this._value = value | 0;
-
+    set value (value) {
+        this._value = value|0;
     }
 
-    get value() {
-        return this._value;
+    get value () {
+        return this._value|0;
+    }
+
+    valueOf() {
+        return this._value|0;
+    }
+
+    get safe () {
+        return this < 2147483648;
     }
 
     [Symbol.iterator]() {
         return {
-            items: this.state.split(''),
+            items: this.state.split('').map(bit => bit|0).reverse(),
             next() {
                 return {
                     done: this.items.length === 0,
@@ -40,7 +45,7 @@ class Bitwise {
     flip(nthBit) {
         let bits = this.state.split('').reverse();
         bits[nthBit] = bits[nthBit] ? 0 : 1;
-        this.value = parseInt(bits.reverse().join(''), 2);
+        this._value = parseInt(bits.reverse().join(''), 2);
     }
 
     bitsOn(...bits) {
@@ -57,23 +62,15 @@ class Bitwise {
     }
 
     get bitarray() {
-        return this.state.split('');
+        return this.state.split('').map(bit => bit|0).reverse();
     }
 
     toString() {
-        return '[object BitwiseState] ' + this.state;
+        return '[object Bitwise] ' + this.state;
     }
 
     static eq(bitwise, bitwise2) {
-        let v1 = bitwise;
-        let v2 = bitwise2;
-        if (bitwise instanceof Bitwise) {
-            v1 = bitwise.value;
-        }
-        if (bitwise2 instanceof Bitwise) {
-            v2 = bitwise2.value;
-        }
-        return Bitwise.and(v1,v2);
+        return bitwise.valueOf() === bitwise2.valueOf();
     }
 
     static or(...values) {
@@ -91,14 +88,12 @@ class Bitwise {
         return values.reduce((result, value) => result & value, initial);
     }
 
-    static fromArray(...bits) {
-        let tmp = new Bitwise(0);
-        [...new Set(bits)].forEach(bit => tmp.value |= (Bitwise.bit[bit] ? 1 : 0));
-        return tmp;
+    static fromArray(bits) {
+        return new Bitwise(parseInt(bits.reverse().join('').padStart(32,'0'),2));
     }
 
     static fromString(binaryString) {
-        return Bitwise.fromArray(binaryString.split(''));
+        return new Bitwise(parseInt(binaryString,2));
     }
 
     static get bit() {

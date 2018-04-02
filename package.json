@@ -2,7 +2,7 @@
   "name": "bitwise-js",
   "version": "1.0.0",
   "description": "A bitwise convenience class for ecmascript 6 or above",
-  "main": "bitwise.state.js",
+  "main": "bitwise.js",
   "scripts": {
     "test": "node ./node_modules/.bin/mocha test/bitwise.spec.js"
   },
